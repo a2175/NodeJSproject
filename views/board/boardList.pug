@@ -1,0 +1,28 @@
+include /common/header.html
+
+div.board_list.auto-center
+  h3= "총 게시물 수 : " + data.listNum
+  table(width="100%")
+    colgroup
+      col(width="10%")
+      col(width="60%")
+      col(width="15%")
+      col(width="15%")
+    thead
+      tr
+        th 번호
+        th 제목
+        th 작성자
+        th 작성일
+    tbody
+      each list in data.list
+        tr
+          td= list.idx
+          td.al_l
+            a(href="/board/view/" + list.idx)= list.subject
+          td= list.name
+          td= list.date.replace('T', ' ').substr(0, 19)
+  div.btn_group
+    a.btn-default(href="board/view/3") 작성
+
+include /common/footer.html
