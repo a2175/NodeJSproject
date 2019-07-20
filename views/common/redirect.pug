@@ -1,0 +1,7 @@
+if isset(msg)
+  script(type="text/javascript").
+    alert("#{msg}");
+    document.location.replace("#{url}");
+else
+  script(type="text/javascript").
+    document.location.replace("#{url}");

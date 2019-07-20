@@ -1,0 +1,20 @@
+include /common/header.html
+
+div.board_view.auto-center
+  h3 글보기
+  div.table
+    div.tr
+      div.lbl 작성자
+      div.desc= data.name
+    div.tr
+      div.lbl 제목
+      div.desc= data.subject
+    div.tr
+      div.lbl 내용
+      div.desc.content= data.content
+  div.btn_group
+    a.btn-default(href="/board") 목록
+    a.btn-submit(href="/board/update/" + data.idx) 수정
+    a.btn-submit(href="/board/delete/" + data.idx) 삭제
+
+include /common/footer.html

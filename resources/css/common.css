@@ -132,3 +132,4 @@ span.middle.all ~ * { display: inline-block; vertical-align: middle; }
 .submit_chat > .desc { width: 86%; margin-left: 10px; }
 .submit_chat > .desc > textarea { width: 81%; }
 .submit_chat > .btn_group > .btn-submit { margin-right: 15px; }
+.btn-default, .btn-submit { margin-left: 5px; } /* nodejs에서만 사용 */
