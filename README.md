@@ -1,4 +1,8 @@
-#version = 1.20v
+#version = 1.30v
+
+[NodeJSproject 1.30v]
+1. 게시글 수정 구축
+2. 게시글 삭제 구축
 
 [NodeJSproject 1.20v]
 1. 게시글 상세보기 구축
