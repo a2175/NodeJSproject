@@ -1,10 +1,22 @@
 var http = require('http');
 var fs = require('fs');
 var url = require('url');
+var ip = require("ip");
 var bodyParser = require('body-parser')
 var express = require('express');
 
-var _global = require("./global"); // custom global variable and function
+global.PORT = 3001;
+global._ROOT = __dirname + "/";
+global._APP = _ROOT + "js/";
+global._VIEW = _ROOT + "views/";
+global._RESOURCES = _ROOT + "resources/";
+global._CONFIG = _APP + "config/";
+global._URL = "http://" + ip.address() + ":" + PORT + "/";
+global._IMG = _URL + "resources/img/";
+global._CSS = _URL + "resources/css/";
+global._JS = _URL + "resources/js/";
+
+var lib = require(_CONFIG + "/lib"); // custom global function
 
 app = express();
 app.locals.pretty = true;
@@ -44,6 +56,6 @@ var callback = function(request, response) {
 app.get('/*', callback);
 app.post('/*', callback);
 
-app.listen(port, function() {
+app.listen(PORT, function() {
   console.log('server start!');
 });

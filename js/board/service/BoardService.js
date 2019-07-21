@@ -27,11 +27,11 @@ class BoardService {
   }
 
   updateBoard() {
-
+    return this.boardDAO.updateBoard().affectedRows;
   }
 
   deleteBoard() {
-
+    return this.boardDAO.deleteBoard().affectedRows;
   }
 }
 

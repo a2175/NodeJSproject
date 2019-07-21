@@ -3,15 +3,15 @@ include /common/header.html
 div.board_write.auto-center
   form(action="" method="post")
     fieldset
-      legend 글작성
-      input(type="hidden" name="request" value="insert")
-      h3 글작성
+      legend 글수정
+      input(type="hidden" name="request" value="update")
+      h3 글수정
       div.table
         div.tr
           div.lbl
             label(for="board_name") 작성자
           div.desc
-            input(type="text" id="board_name" name="name" size="20" title="작성자" required autofocus)
+            input(type="text" id="board_name" name="name" size="20" title="작성자" required autofocus value= data.name)
         div.tr
           div.lbl
             label(for="board_pw") 비밀번호
@@ -21,14 +21,14 @@ div.board_write.auto-center
           div.lbl
             label(for="board_subject") 제목
           div.desc
-            input(type="text" id="board_subject" name="subject" size="80" title="제목" required)
+            input(type="text" id="board_subject" name="subject" size="80" title="제목" required value= data.subject)
         div.tr
           div.lbl
             label(for="board_content") 내용
           div.desc
-            textarea(id="board_content" name="content" cols="80" rows="10" title="내용" required)
+            textarea(id="board_content" name="content" cols="80" rows="10" title="내용" required)= data.content
       div.btn_group
-        a.btn-default(href="/board") 취소
+        a.btn-default(href="/board/view/" + data.idx) 취소
         button.btn-submit(type="submit") 완료
 
 include /common/footer.html

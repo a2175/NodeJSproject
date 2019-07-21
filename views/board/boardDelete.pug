@@ -1,0 +1,19 @@
+include /common/header.html
+
+div.board_write.auto-center
+  form(action="" method="post")
+    fieldset
+      legend 글삭제
+      input(type="hidden" name="request" value="delete")
+      h3 글삭제
+      div.table
+        div.tr
+          div.lbl
+            label(for="board_pw") 비밀번호
+          div.desc
+            input(type="password" id="board_pw" name="pw" size="20" title="비밀번호" required autofocus)
+      div.btn_group
+        a.btn-default(href="/board/view/" + idx) 취소
+        button.btn-submit(type="submit") 완료
+
+include /common/footer.html
