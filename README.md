@@ -1,3 +1,7 @@
+express와 pug를 사용했고 MVC 모델로 만든 간단한 CRUD 게시판입니다.
+
+* * *
+
 #version = 1.30v
 
 [NodeJSproject 1.30v]
