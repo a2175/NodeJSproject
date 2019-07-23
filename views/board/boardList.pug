@@ -24,5 +24,16 @@ div.board_list.auto-center
           td= list.date.replace('T', ' ').substr(0, 19)
   div.btn_group
     a.btn-default(href="/board/write") 작성
+  div#PAGE_NAVI(style="margin:auto; display:table;")
+
+script(type="text/javascript").
+  var params = {
+      divId : "PAGE_NAVI",
+      pageIndex : "#{param.page_num}",
+      totalCount : #{data.listNum},
+      eventName : #{isset(param.keyword)} ? "#{param.get_page}/searchpage/" : "#{param.get_page}/page/",
+      keyword : "#{param.keyword}"
+  };
+  gfn_renderPaging(params);
 
 include /common/footer.html

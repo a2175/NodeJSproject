@@ -6,8 +6,15 @@ class BoardDAO {
   }
 
   openBoardList() {
-    var sql = "SELECT * FROM board ORDER BY idx DESC limit 10";
-    return this.db.query(sql);
+    var nPageIndex = this.param.page_num - 1;
+    var nPageRow = 15;
+
+    var START = nPageIndex * nPageRow;
+    var END = nPageRow;
+
+    var sql = "SELECT * FROM board ORDER BY idx DESC limit ?, ?";
+    var params = [START, END];
+    return this.db.query(sql, params);
   }
 
   countBoard() {

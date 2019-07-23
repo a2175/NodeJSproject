@@ -31,7 +31,7 @@ class BoardController {
   openBoardList() {
     var data = this.boardService.openBoardList();
 
-    this.response.render(_VIEW + 'board/boardList', {data : data});
+    this.response.render(_VIEW + 'board/boardList', {data : data, param : this.param});
   }
 
   openBoardDetail() {
