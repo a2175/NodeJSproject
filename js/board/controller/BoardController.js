@@ -26,7 +26,6 @@ class BoardController {
         default : this.openBoardList(); break;
       }
     }
-
   }
 
   openBoardList() {

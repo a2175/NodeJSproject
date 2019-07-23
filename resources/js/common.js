@@ -60,9 +60,16 @@ function ComAjax(form){
     };
 
     this.ajax = function ajax(){
+        var object = {};
+        formData.forEach(function(value, key){
+            object[key] = value;
+        });
         fetch(formUrl, {
             method: "POST",
-            body: formData
+            body: JSON.stringify(object),
+            headers: {
+            'content-type': "application/json"
+            }
         }).then(data => data.text())
           .then(eval(fv_ajaxCallback));
     };

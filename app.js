@@ -25,6 +25,7 @@ app.set('view engine', 'pug');
 app.set('views', './views');
 app.use('/resources', express.static('resources'));
 app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json());
 
 app.get('/favicon.ico', function(request, response) {
   response.sendStatus(404);
@@ -37,12 +38,12 @@ var callback = function(request, response) {
 
   fs.readdir('./js', function(error, filelist) {
     if (filelist.includes(param.page_type)) {
-      console.log("url: " + pathname);
+      //console.log("url: " + pathname);
       var controllerName = param.page_type + 'Controller';
       controllerName = controllerName[0].toUpperCase() + controllerName.substring(1);
 
       var controllerPath = _APP + param.page_type + '/controller/' + controllerName;
-      console.log("controllerPath is: " + controllerPath);
+      //console.log("controllerPath is: " + controllerPath);
 
       var controllerClass = require(controllerPath);
       var controller = new controllerClass(request, response, param);
