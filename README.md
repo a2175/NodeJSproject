@@ -2,7 +2,10 @@ express와 pug를 사용했고 MVC 모델로 만든 간단한 CRUD 게시판입�
 
 * * *
 
-#version = 1.50v
+#version = 1.51v
+
+[NodeJSproject 1.51v]
+1. 불필요한 코드 수정
 
 [NodeJSproject 1.50v]
 1. 게시판 페이징 구축
