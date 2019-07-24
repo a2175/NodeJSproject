@@ -11,10 +11,6 @@ global._APP = _ROOT + "js/";
 global._VIEW = _ROOT + "views/";
 global._RESOURCES = _ROOT + "resources/";
 global._CONFIG = _APP + "config/";
-global._URL = "http://" + ip.address() + ":" + PORT + "/";
-global._IMG = _URL + "resources/img/";
-global._CSS = _URL + "resources/css/";
-global._JS = _URL + "resources/js/";
 
 var lib = require(_CONFIG + "/lib"); // custom global function
 
@@ -38,7 +34,8 @@ var callback = function(request, response) {
 
   fs.readdir('./js', function(error, filelist) {
     if (filelist.includes(param.page_type)) {
-      //console.log("url: " + pathname);
+      //console.log(request.get('host'));
+      //console.log("pathname: " + pathname);
       var controllerName = param.page_type + 'Controller';
       controllerName = controllerName[0].toUpperCase() + controllerName.substring(1);
 

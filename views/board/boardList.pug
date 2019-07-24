@@ -31,7 +31,7 @@ script(type="text/javascript").
       divId : "PAGE_NAVI",
       pageIndex : "#{param.page_num}",
       totalCount : #{data.listNum},
-      eventName : #{isset(param.keyword)} ? "#{param.get_page}/searchpage/" : "#{param.get_page}/page/",
+      eventName : #{isset(param.keyword)} ? "/#{param.page_type}/searchpage/" : "/#{param.page_type}/page/",
       keyword : "#{param.keyword}"
   };
   gfn_renderPaging(params);

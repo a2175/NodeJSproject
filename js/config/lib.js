@@ -14,7 +14,6 @@ module.exports = function() {
     param.page_num = isset(get[2]) && get[2] != '' ? get[2] : 1;
     param.keyword = isset(get[3]) && get[3] != '' ? get[3] : null;
     param.include_file = isset(param.action) ? param.action : param.page_type;
-    param.get_page = _URL + param.page_type;
     return param;
   }
 }()
