@@ -23,17 +23,29 @@ div.board_list.auto-center
           td= list.name
           td= list.date.replace('T', ' ').substr(0, 19)
   div.btn_group
+    span 제목 검색:
+    input#keyword(type="text" name="keyword" value=param.keyword)
+    a.btn-submit#search(href="") 검색
     a.btn-default(href="/board/write") 작성
   div#PAGE_NAVI(style="margin:auto; display:table;")
 
 script(type="text/javascript").
   var params = {
-      divId : "PAGE_NAVI",
-      pageIndex : "#{param.page_num}",
-      totalCount : #{data.listNum},
-      eventName : #{isset(param.keyword)} ? "/#{param.page_type}/searchpage/" : "/#{param.page_type}/page/",
-      keyword : "#{param.keyword}"
+    divId : "PAGE_NAVI",
+    pageIndex : "#{param.page_num}",
+    totalCount : #{data.listNum},
+    eventName : #{isset(param.keyword)} ? "/#{param.page_type}/searchpage/" : "/#{param.page_type}/page/",
+    keyword : "#{param.keyword}"
   };
   gfn_renderPaging(params);
 
+  document.getElementById("search").addEventListener('click', function(e){
+    e.preventDefault();
+    fn_openBoardSearchList();
+  });
+
+  function fn_openBoardSearchList() {
+    keyword = document.getElementById("keyword").value;
+    location.href = "/#{param.page_type}/searchpage/1/"+keyword;
+   }
 include /common/footer.html

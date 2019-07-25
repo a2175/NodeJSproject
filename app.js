@@ -1,9 +1,9 @@
 var http = require('http');
-var fs = require('fs');
 var url = require('url');
-var ip = require("ip");
-var bodyParser = require('body-parser')
+var qs = require('querystring');
+var fs = require('fs');
 var express = require('express');
+var bodyParser = require('body-parser')
 
 global.PORT = 3001;
 global._ROOT = __dirname + "/";
@@ -28,7 +28,7 @@ app.get('/favicon.ico', function(request, response) {
 });
 
 var callback = function(request, response) {
-  var _url = request.url;
+  var _url = qs.unescape(request.url);
   var pathname = url.parse(_url, true).pathname;
   var param = getParam(pathname);
 

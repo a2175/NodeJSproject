@@ -22,7 +22,7 @@ class BoardController {
         case 'write' : this.openBoardWrite(); break;
         case 'update' : this.openBoardUpdate(); break;
         case 'delete' : this.openBoardDelete(); break;
-        // case 'searchpage' : this->openBoardSearchList(); break;
+        case 'searchpage' : this.openBoardSearchList(); break;
         default : this.openBoardList(); break;
       }
     }
@@ -30,6 +30,12 @@ class BoardController {
 
   openBoardList() {
     var data = this.boardService.openBoardList();
+
+    this.response.render(_VIEW + 'board/boardList', {data : data, param : this.param});
+  }
+
+  openBoardSearchList() {
+    var data = this.boardService.openBoardSearchList();
 
     this.response.render(_VIEW + 'board/boardList', {data : data, param : this.param});
   }

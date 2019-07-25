@@ -12,14 +12,32 @@ class BoardDAO {
     var START = nPageIndex * nPageRow;
     var END = nPageRow;
 
-    var sql = "SELECT * FROM board ORDER BY idx DESC limit ?, ?";
+    var sql = "SELECT * FROM board ORDER BY idx DESC LIMIT ?, ?";
     var params = [START, END];
+    return this.db.query(sql, params);
+  }
+
+  openBoardSearchList() {
+    var nPageIndex = this.param.page_num - 1;
+    var nPageRow = 15;
+
+    var START = nPageIndex * nPageRow;
+    var END = nPageRow;
+
+    var sql = "SELECT * FROM board WHERE subject LIKE CONCAT('%', ?, '%') ORDER BY idx DESC LIMIT ?, ?";
+    var params = [this.param.keyword ,START, END];
     return this.db.query(sql, params);
   }
 
   countBoard() {
     var sql = "SELECT count(*) AS count FROM board";
     return this.db.query(sql);
+  }
+
+  countSearchBoard() {
+    var sql = "SELECT count(*) AS count FROM board WHERE subject LIKE CONCAT('%', ?, '%')";
+    var params = [this.param.keyword];
+    return this.db.query(sql, params);
   }
 
   openBoardDetail() {

@@ -18,6 +18,17 @@ class BoardService {
     return result;
   }
 
+  openBoardSearchList() {
+    var list = this.boardDAO.openBoardSearchList();
+    var listNum = this.boardDAO.countSearchBoard();
+    var result = {
+      list: list,
+      listNum: listNum[0].count
+    };
+
+    return result;
+  }
+
   openBoardDetail() {
     return this.boardDAO.openBoardDetail()[0];
   }
