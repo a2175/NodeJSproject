@@ -2,7 +2,13 @@ express와 pug를 사용했고 MVC 모델로 만든 간단한 CRUD 게시판입�
 
 * * *
 
-#version = 1.51v
+#version = 1.60v
+
+[NodeJSproject 1.60v]
+1. 게시글 검색기능 구축
+
+[NodeJSproject 1.51v]
+1. 불필요한 코드 수정
 
 [NodeJSproject 1.51v]
 1. 불필요한 코드 수정
