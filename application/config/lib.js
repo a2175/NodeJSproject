@@ -2,6 +2,7 @@ module.exports = function() {
   global.isset = function isset(variable) {
     return typeof(variable) != "undefined" && variable !== null;
   }
+
   global.getParam = function getParam(url) {
     var get = [];
     if (isset(url)) {

@@ -68,7 +68,7 @@ function ComAjax(form){
             method: "POST",
             body: JSON.stringify(object),
             headers: {
-            'content-type': "application/json"
+                'content-type': "application/json"
             }
         }).then(data => data.text())
           .then(eval(fv_ajaxCallback));
