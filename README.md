@@ -2,7 +2,11 @@ express와 pug를 사용해서 만든 간단한 CRUD 게시판입니다.
 
 * * *
 
-#version = 1.70v
+#version = 1.80v
+
+[NodeJSproject 1.80v]
+1. 게시글 댓글 등록 구축
+2. 게시글 댓글 삭제 구축
 
 [NodeJSproject 1.70v]
 1. 데이터베이스 비동기 처리를 위해 MVC 구조에서 다른 구조로 변경 (route에서 일괄 처리)
