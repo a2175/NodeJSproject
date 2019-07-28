@@ -12,9 +12,139 @@ div.board_view.auto-center
     div.tr
       div.lbl 내용
       div.desc.content= data.content
+  div#comment_list
+  div.submit_comment
+    span.input
+      div.tr
+        input#name(type="text" placeholder="닉네임")
+      div.tr
+        input#pw(type="password" placeholder="비밀번호")
+    span.desc
+      textarea#content(rows="5" placeholder="내용")
+    div.btn_group
+      a#submit.btn-submit(href="") 등록
   div.btn_group
     a.btn-default(href="/board") 목록
     a.btn-submit(href="/board/update/" + data.idx) 수정
     a.btn-submit(href="/board/delete/" + data.idx) 삭제
+
+script(type="text/javascript").
+  fn_selectCommentList();
+
+  document.getElementById("submit").addEventListener('click', function(e){
+    e.preventDefault();
+    fn_insertComment();
+  });
+
+  function fn_selectCommentList() {
+    var comAjax = new ComAjax();
+    comAjax.setUrl("/comment/view/#{param.idx}");
+    comAjax.setCallback("fn_selectCommentListCallback");
+    comAjax.ajax();
+  }
+
+  function fn_selectCommentListCallback(data) {
+    data = JSON.parse(data);
+    var body = document.getElementById("comment_list");
+    var str = "<h4>총 댓글 수 : " + data.totalCount + "</h4>";
+    str += "<div class='table'>";
+    for(var key in data.list) {
+      str +=  "<div class='tr'>" +
+                "<div class='lbl'>" + data.list[key].name + "</div>" +
+                "<div class='desc'>" + data.list[key].content + "</div>" +
+                "<div class='date'>" + data.list[key].date.replace('T', ' ').substr(0, 19) + "</div>" +
+                "<div class='delete'>" + "<a href='#' id='opendel'><img src='/resources/img/delete.jpg'></a>" + "</div>" +
+                "<input type='hidden' id='idx' value=" + data.list[key].idx + ">" +
+              "</div>";
+    };
+    str += "</div>";
+    body.innerHTML = str;
+
+    for(i=0; i<body.querySelectorAll('#opendel').length; i++) {
+      body.querySelectorAll('#opendel')[i].addEventListener('click', function(e){
+        e.preventDefault();
+        fn_openDeleteComment(this.parentElement);
+      });
+    }
+  }
+
+  function fn_checkComment(name, pw, content) {
+    if(name.length == 0) { alert("닉네임을 입력해주세요."); return false; }
+    if(pw.length == 0) { alert("비밀번호를 입력해주세요."); return false; }
+    if(content.length == 0) { alert("내용을 입력해주세요."); return false; }
+
+    return true;
+  }
+
+  function fn_insertComment() {
+    var name = document.getElementById("name").value;
+    var pw = document.getElementById("pw").value;
+    var content = document.getElementById("content").value;
+
+    if(fn_checkComment(name, pw, content)) {
+      document.getElementById("name").value = '';
+      document.getElementById("pw").value = '';
+      document.getElementById("content").value = '';
+
+      var comAjax = new ComAjax();
+      comAjax.setUrl("/comment/write/#{param.idx}");
+      comAjax.setCallback('fn_selectCommentList');
+      comAjax.addParam("request", "insert");
+      comAjax.addParam("name", name);
+      comAjax.addParam("pw", pw);
+      comAjax.addParam("content", content);
+      comAjax.ajax();
+    }
+  }
+
+  function fn_openDeleteComment(obj) {
+    if(document.getElementById("comment_list").querySelector(".btn_group") != null)
+      document.getElementById("comment_list").querySelector(".btn_group").remove();
+
+    var div = document.createElement("div");
+    div.className = "btn_group";
+    var str = "<input type='password' id='commentpw' placeholder='비밀번호'>" +
+              "<a id='commentdelete' class='btn-submit' href=''>확인</a>" +
+              "<a id='commentcencel' class='btn-submit' href=''>취소</a>";
+    div.innerHTML = str;
+
+    obj.parentElement.appendChild(div);
+
+    document.querySelector("a[id='commentdelete']").addEventListener('click', function(e){
+      e.preventDefault();
+      fn_deleteComment(this);
+    });
+
+    document.querySelector("a[id='commentcencel']").addEventListener('click', function(e){
+      e.preventDefault();
+      fn_deleteCencel(this);
+    });
+  }
+
+  function fn_deleteComment(obj) {
+    var idx = obj.parentElement.parentElement.querySelector("#idx").value;
+    var pw = obj.parentElement.querySelector("#commentpw").value;
+
+    var comAjax = new ComAjax();
+    comAjax.setUrl("/comment/delete/" + idx);
+    comAjax.setCallback("fn_deleteCommentCallback");
+    comAjax.addParam("request", "delete");
+    comAjax.addParam("pw", pw);
+    comAjax.ajax();
+  }
+
+  function fn_deleteCommentCallback(data) {
+    if(data == 1) {
+      alert("완료되었습니다.");
+      fn_selectCommentList();
+    }
+    else {
+      alert("비밀번호가 일치하지 않습니다.");
+    }
+  }
+
+  function fn_deleteCencel(obj) {
+    obj.parentElement.remove();
+  }
 
 include /common/footer.html

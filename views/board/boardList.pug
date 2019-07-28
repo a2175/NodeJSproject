@@ -19,7 +19,7 @@ div.board_list.auto-center
         tr
           td= list.idx
           td.al_l
-            a(href="/board/view/" + list.idx)= list.subject
+            a(href="/board/view/" + list.idx)= list.commentNum > 0 ? list.subject + " ["+list.commentNum+"]" : list.subject
           td= list.name
           td= list.date.replace('T', ' ').substr(0, 19)
   div.btn_group

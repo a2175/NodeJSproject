@@ -30,10 +30,7 @@ script(type="text/javascript").
     fn_insertChat();
   });
 
-  function fn_checkComment() {
-    var name = document.getElementById("name").value;
-    var content = document.getElementById("content").value;
-
+  function fn_checkComment(name, content) {
     if(name.length == 0) { alert("닉네임을 입력해주세요."); return false; }
     if(content.length == 0) { alert("내용을 입력해주세요."); return false; }
 
@@ -44,7 +41,7 @@ script(type="text/javascript").
     var name = document.getElementById("name").value;
     var content = document.getElementById("content").value;
 
-    if(fn_checkComment()) {
+    if(fn_checkComment(name, content)) {
       document.getElementById("content").value = '';
       document.getElementById("content").focus();
 

@@ -29,7 +29,7 @@ module.exports = function BoardController (request, response, param) {
       var START = nPageIndex * nPageRow;
       var END = nPageRow;
 
-      var sql1 = "SELECT * FROM board ORDER BY idx DESC LIMIT ?, ?;";
+      var sql1 = "SELECT *, (SELECT count(IDX) FROM comment WHERE board_idx = board.idx) AS commentNum FROM board ORDER BY idx DESC LIMIT ?, ?;";
       var sql2 = "SELECT count(*) AS count FROM board";
       var params = [START, END];
 
@@ -53,7 +53,7 @@ module.exports = function BoardController (request, response, param) {
       var START = nPageIndex * nPageRow;
       var END = nPageRow;
 
-      var sql1 = "SELECT * FROM board WHERE subject LIKE CONCAT('%', ?, '%') ORDER BY idx DESC LIMIT ?, ?;";
+      var sql1 = "SELECT *, (SELECT count(IDX) FROM comment WHERE board_idx = board.idx) AS commentNum FROM board WHERE subject LIKE CONCAT('%', ?, '%') ORDER BY idx DESC LIMIT ?, ?;";
       var sql2 = "SELECT count(*) AS count FROM board WHERE subject LIKE CONCAT('%', ?, '%')";
       var params = [param.keyword, START, END, param.keyword];
 
@@ -76,7 +76,7 @@ module.exports = function BoardController (request, response, param) {
 
       connection.query(sql, params, function (error, results, fields) {
         var data = db.toJSON(results)[0];
-        response.render(_VIEW + 'board/boardDetail', {data : data});
+        response.render(_VIEW + 'board/boardDetail', {data : data, param : param});
       });
     };
 
