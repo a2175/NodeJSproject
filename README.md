@@ -2,7 +2,10 @@ express와 pug를 사용해서 만든 간단한 CRUD 게시판입니다.
 
 * * *
 
-#version = 1.80v
+#version = 1.81v
+
+[NodeJSproject 1.81v]
+1. 데이터베이스 불필요한 코드 수정
 
 [NodeJSproject 1.80v]
 1. 게시글 댓글 등록 구축
@@ -13,9 +16,6 @@ express와 pug를 사용해서 만든 간단한 CRUD 게시판입니다.
 
 [NodeJSproject 1.60v]
 1. 게시글 검색기능 구축
-
-[NodeJSproject 1.51v]
-1. 불필요한 코드 수정
 
 [NodeJSproject 1.51v]
 1. 불필요한 코드 수정
