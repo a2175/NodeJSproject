@@ -1,7 +1,8 @@
-var db = require(_CONFIG + "database");
+var mysql = require('mysql');
+var mydb = require(_CONFIG + "database");
 
 module.exports = function ChatController(request, response, param) {
-  var connection = db.getDB();
+  var connection = mysql.createConnection(mydb.dbSet);
 
   if(isset(request.body.request)) {
     switch(request.body.request) {
@@ -20,29 +21,25 @@ module.exports = function ChatController(request, response, param) {
   }
 
   function selectChatList() {
-    var action = function() {
-      var sql = "SELECT * FROM chat";
+    var sql = "SELECT * FROM chat";
 
-      connection.query(sql, function (error, results, fields) {
-        var data = db.toJSON(results);
-        response.send(data);
-      });
-    };
-
-    db.dbAction(action, connection);
+    connection.connect();
+    connection.query(sql, function (error, results, fields) {
+      var data = mydb.toJSON(results);
+      response.send(data);
+    });
+    connection.end();
   }
 
   function insertChat() {
-    var action = function() {
-      var sql = "INSERT INTO chat SET name = ?, content = ?, date=now()";
-      var formData = request.body;
-      var params = [formData.name, formData.content];
+    var sql = "INSERT INTO chat SET name = ?, content = ?, date=now()";
+    var formData = request.body;
+    var params = [formData.name, formData.content];
 
-      connection.query(sql, params, function (error, results, fields) {
-          response.end();
-      });
-    };
-
-    db.dbAction(action, connection);
+    connection.connect();
+    connection.query(sql, params, function (error, results, fields) {
+        response.end();
+    });
+    connection.end();
   }
 }
