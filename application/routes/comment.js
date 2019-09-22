@@ -20,7 +20,6 @@ module.exports = function CommentController (request, response, param) {
     var sql = "SELECT * FROM comment WHERE board_idx = ? ORDER BY idx";
     var params = [param.idx];
 
-    connection.connect();
     connection.query(sql, params, function (error, results, fields) {
       var list = mydb.toJSON(results);
       var data = {
@@ -29,7 +28,6 @@ module.exports = function CommentController (request, response, param) {
       };
       response.send(data);
     });
-    connection.end();
   }
 
   function insertComment() {
@@ -37,11 +35,9 @@ module.exports = function CommentController (request, response, param) {
     var formData = request.body;
     var params = [formData.name, formData.pw, formData.content, param.idx];
 
-    connection.connect();
     connection.query(sql, params, function (error, results, fields) {
         response.end();
     });
-    connection.end();
   }
 
 
@@ -50,11 +46,9 @@ module.exports = function CommentController (request, response, param) {
     var formData = request.body;
     var params = [param.idx, formData.pw];
 
-    connection.connect();
     connection.query(sql, params, function (error, results, fields) {
       var isDeleted = String(results.affectedRows);
       response.send(isDeleted);
     });
-    connection.end();
   }
 }

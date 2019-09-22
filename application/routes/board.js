@@ -33,7 +33,6 @@ module.exports = function BoardController (request, response, param) {
     var sql2 = "SELECT count(*) AS count FROM board";
     var params = [START, END];
 
-    connection.connect();
     connection.query(sql1 + sql2, params, function (error, results, fields) {
       var data = {
         list: mydb.toJSON(results[0]),
@@ -41,7 +40,6 @@ module.exports = function BoardController (request, response, param) {
       };
       response.render(_VIEW + 'board/boardList', {data : data, param : param});
     });
-    connection.end();
   }
 
   function openBoardSearchList() {
@@ -55,7 +53,6 @@ module.exports = function BoardController (request, response, param) {
     var sql2 = "SELECT count(*) AS count FROM board WHERE subject LIKE CONCAT('%', ?, '%')";
     var params = [param.keyword, START, END, param.keyword];
 
-    connection.connect();
     connection.query(sql1 + sql2, params, function (error, results, fields) {
       var data = {
         list: mydb.toJSON(results[0]),
@@ -63,19 +60,16 @@ module.exports = function BoardController (request, response, param) {
       };
       response.render(_VIEW + 'board/boardList', {data : data, param : param});
     });
-    connection.end();
   }
 
   function openBoardDetail() {
     var sql = "SELECT * FROM board WHERE idx = ?";
     var params = [param.idx];
 
-    connection.connect();
     connection.query(sql, params, function (error, results, fields) {
       var data = mydb.toJSON(results)[0];
       response.render(_VIEW + 'board/boardDetail', {data : data, param : param});
     });
-    connection.end();
   }
 
   function openBoardWrite() {
@@ -87,23 +81,19 @@ module.exports = function BoardController (request, response, param) {
     var formData = request.body;
     var params = [formData.name, formData.pw, formData.subject, formData.content];
 
-    connection.connect();
     connection.query(sql, params, function (error, results, fields) {
       response.render(_VIEW + 'common/redirect', {msg : "완료되었습니다.", url : "/board"});
     });
-    connection.end();
   }
 
   function openBoardUpdate() {
     var sql = "SELECT * FROM board WHERE idx = ?";
     var params = [param.idx];
 
-    connection.connect();
     connection.query(sql, params, function (error, results, fields) {
       var data = mydb.toJSON(results)[0];
       response.render(_VIEW + 'board/boardUpdate', {data : data});
     });
-    connection.end();
   }
 
   function updateBoard() {
@@ -111,7 +101,6 @@ module.exports = function BoardController (request, response, param) {
     var formData = request.body;
     var params = [formData.name, formData.subject, formData.content, param.idx, formData.pw];
 
-    connection.connect();
     connection.query(sql, params, function (error, results, fields) {
       var isUpdated = results.affectedRows;
 
@@ -120,7 +109,6 @@ module.exports = function BoardController (request, response, param) {
       else
         response.render(_VIEW + 'common/redirect', {msg : "비밀번호가 일치하지 않습니다.", url : "/board/update/" + param.idx});
     });
-    connection.end();
   }
 
   function openBoardDelete() {
@@ -132,7 +120,6 @@ module.exports = function BoardController (request, response, param) {
     var formData = request.body;
     var params = [param.idx, formData.pw];
 
-    connection.connect();
     connection.query(sql, params, function (error, results, fields) {
       var isDeleted = results.affectedRows;
 
@@ -141,6 +128,5 @@ module.exports = function BoardController (request, response, param) {
       else
         response.render(_VIEW + 'common/redirect', {msg : "비밀번호가 일치하지 않습니다.", url : "/board/delete/" + param.idx});
     });
-    connection.end();
   }
 }

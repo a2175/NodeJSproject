@@ -1,45 +1,30 @@
 var mysql = require('mysql');
 var mydb = require(_CONFIG + "database");
 
-module.exports = function ChatController(request, response, param) {
+module.exports = function ChatController(io) {
   var connection = mysql.createConnection(mydb.dbSet);
 
-  if(isset(request.body.request)) {
-    switch(request.body.request) {
-      case 'insert' : insertChat(); break;
-    }
-  }
-  else {
-    switch(param.action){
-      case 'view' : selectChatList(); break;
-      case null : openChat(); break;
-    }
-  }
+  io.on('connection', function(socket) {
 
-  function openChat() {
-    response.render(_VIEW + 'chat/chat');
-  }
+    socket.on('list', function(data) {
+      var sql = "SELECT * FROM chat";
 
-  function selectChatList() {
-    var sql = "SELECT * FROM chat";
-
-    connection.connect();
-    connection.query(sql, function (error, results, fields) {
-      var data = mydb.toJSON(results);
-      response.send(data);
+      connection.query(sql, function (error, results, fields) {
+        var data = mydb.toJSON(results);
+        io.emit('list', data);
+      });
     });
-    connection.end();
-  }
 
-  function insertChat() {
-    var sql = "INSERT INTO chat SET name = ?, content = ?, date=now()";
-    var formData = request.body;
-    var params = [formData.name, formData.content];
+    socket.on('insert', function(data) {
+      var sql1 = "INSERT INTO chat SET name = ?, content = ?, date=now();";
+      var sql2 = "SELECT * FROM chat ORDER BY idx DESC LIMIT 1";
+      var params = [data.name, data.content];
 
-    connection.connect();
-    connection.query(sql, params, function (error, results, fields) {
-        response.end();
+      connection.query(sql1 + sql2, params, function (error, results, fields) {
+        var data = mydb.toJSON(results[1][0]);
+        io.emit('update', data);
+      });
     });
-    connection.end();
-  }
+
+  });
 }
