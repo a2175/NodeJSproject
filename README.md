@@ -1,7 +1,7 @@
-Node.js + Express + Pug + MySQL
+Node.js + Express + Pug + Socket.io + MySQL
 ==============================
 Express + Pug를 사용한 간단한 CRUD 게시판과  
-socket.io를 사용한 실시간 채팅 프로젝트입니다.
+Socket.io를 사용한 실시간 채팅 프로젝트입니다.
 
 #version = 1.90v
 
