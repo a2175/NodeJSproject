@@ -16,12 +16,10 @@ module.exports = function ChatController(io) {
     });
 
     socket.on('insert', function(data) {
-      var sql1 = "INSERT INTO chat SET name = ?, content = ?, date=now();";
-      var sql2 = "SELECT * FROM chat ORDER BY idx DESC LIMIT 1";
+      var sql = "INSERT INTO chat SET name = ?, content = ?, date=now();";
       var params = [data.name, data.content];
 
-      connection.query(sql1 + sql2, params, function (error, results, fields) {
-        var data = mydb.toJSON(results[1][0]);
+      connection.query(sql, params, function (error, results, fields) {
         io.emit('update', data);
       });
     });

@@ -44,7 +44,7 @@ script(type="text/javascript").
     str += "<div class='tr'>" +
             "<div class='lbl'>" + data.name + "</div>" +
             "<div class='desc'>" + data.content + "</div>" +
-            "<div class='date'>" + data.date.replace('T', ' ').substr(0, 19) + "</div>" +
+            "<div class='date'>" + data.date + "</div>" +
            "</div>";
 
     body.querySelector('.table').innerHTML += str;
@@ -75,22 +75,34 @@ script(type="text/javascript").
   function fn_insertChat() {
     var name = document.getElementById("name").value;
     var content = document.getElementById("content").value;
-    var data = {
-      name: name,
-      content: content
-    };
 
     if(fn_checkChat(name, content)) {
-      document.getElementById("content").value = '';
-      document.getElementById("content").focus();
+      var data = {
+        name: name,
+        content: content,
+        date : now()
+      };
 
       socket.emit("insert", data);
+
+      document.getElementById("content").value = '';
+      document.getElementById("content").focus();
     }
   }
 
   function fn_moveScrollEnd() {
     var body = document.getElementById("chat_list");
     body.scrollTop = body.scrollHeight;
+  }
+
+  function now() {
+    var date = new Date();
+    var m = date.getMonth()+1;
+    var d = date.getDate();
+    var h = date.getHours();
+    var i = date.getMinutes();
+    var s = date.getSeconds();
+    return date.getFullYear()+'-'+(m>9?m:'0'+m)+'-'+(d>9?d:'0'+d)+' '+(h>9?h:'0'+h)+':'+(i>9?i:'0'+i)+':'+(s>9?s:'0'+s);
   }
 
 include /common/footer.html
