@@ -24,9 +24,9 @@ div.board_view.auto-center
     div.btn_group
       a#submit.btn-submit(href="") 등록
   div.btn_group
-    a.btn-default(href="/board") 목록
-    a.btn-submit(href="/board/update/" + data.idx) 수정
-    a.btn-submit(href="/board/delete/" + data.idx) 삭제
+    a.btn-default(href="/board/page/1") 목록
+    a.btn-submit(href="/board/edit/" + idx) 수정
+    a.btn-submit(href="/board/delete/" + idx) 삭제
 
 script(type="text/javascript").
   fn_selectCommentList();
@@ -38,8 +38,9 @@ script(type="text/javascript").
 
   function fn_selectCommentList() {
     var comAjax = new ComAjax();
-    comAjax.setUrl("/comment/view/#{param.idx}");
+    comAjax.setUrl("/comment/#{idx}");
     comAjax.setCallback("fn_selectCommentListCallback");
+    comAjax.setMethod("GET");
     comAjax.ajax();
   }
 
@@ -87,9 +88,8 @@ script(type="text/javascript").
       document.getElementById("content").value = '';
 
       var comAjax = new ComAjax();
-      comAjax.setUrl("/comment/write/#{param.idx}");
+      comAjax.setUrl("/comment/#{idx}");
       comAjax.setCallback('fn_selectCommentList');
-      comAjax.addParam("request", "insert");
       comAjax.addParam("name", name);
       comAjax.addParam("pw", pw);
       comAjax.addParam("content", content);
@@ -126,9 +126,8 @@ script(type="text/javascript").
     var pw = obj.parentElement.querySelector("#commentpw").value;
 
     var comAjax = new ComAjax();
-    comAjax.setUrl("/comment/delete/" + idx);
+    comAjax.setUrl("/comment/" + idx + "?_method=DELETE");
     comAjax.setCallback("fn_deleteCommentCallback");
-    comAjax.addParam("request", "delete");
     comAjax.addParam("pw", pw);
     comAjax.ajax();
   }

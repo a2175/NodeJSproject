@@ -1,8 +1,16 @@
 var mysql = require('mysql');
 var mydb = require(_CONFIG + "database");
+var express = require('express');
+var router = express.Router();
 
-module.exports = function ChatController(io) {
-  var connection = mysql.createConnection(mydb.dbSet);
+var connection = mysql.createConnection(mydb.dbSet);
+
+module.exports = function(server)  {
+  router.get('/', function(request, response) {
+    response.render(_VIEW + 'chat/chat');
+  });
+
+  var io = require('socket.io')(server);
 
   io.on('connection', function(socket) {
 
@@ -25,4 +33,6 @@ module.exports = function ChatController(io) {
     });
 
   });
-}
+
+	return router;
+};

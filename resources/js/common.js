@@ -12,7 +12,7 @@ function gfn_isNull(str) {
 function ComSubmit(opt_formId) {
     var formId = gfn_isNull(opt_formId) == true ? "commonForm" : opt_formId;
     var formUrl = "";
-    var formMethod = "post";
+    var formMethod = "POST";
 
     if(formId == "commonForm"){
         document.getElementById("commonForm").innerHTML = "";
@@ -45,10 +45,15 @@ function ComSubmit(opt_formId) {
 function ComAjax(form){
     var formData = new FormData(form);
     var formUrl = "";
+    var formMethod = "POST";
     var fv_ajaxCallback = "";
 
     this.setUrl = function setUrl(url){
         formUrl = url;
+    };
+
+    this.setMethod = function setMethod(method){
+        formMethod = method;
     };
 
     this.setCallback = function setCallback(callBack){
@@ -65,8 +70,8 @@ function ComAjax(form){
             object[key] = value;
         });
         fetch(formUrl, {
-            method: "POST",
-            body: JSON.stringify(object),
+            method: formMethod,
+            body: formMethod == "POST" ? JSON.stringify(object) : null,
             headers: {
                 'content-type': "application/json"
             }

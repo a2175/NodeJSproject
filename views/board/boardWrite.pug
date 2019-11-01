@@ -1,10 +1,9 @@
 include /common/header.html
 
 div.board_write.auto-center
-  form(action="" method="post")
+  form(action="/board/post" method="post")
     fieldset
       legend 글작성
-      input(type="hidden" name="request" value="insert")
       h3 글작성
       div.table
         div.tr
@@ -28,7 +27,7 @@ div.board_write.auto-center
           div.desc
             textarea(id="board_content" name="content" cols="80" rows="10" title="내용" required)
       div.btn_group
-        a.btn-default(href="/board") 취소
+        a.btn-default(href="/board/page/1") 취소
         button.btn-submit(type="submit") 완료
 
 include /common/footer.html
