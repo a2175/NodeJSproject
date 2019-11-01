@@ -77,7 +77,11 @@ router.put('/post/:idx', function(request, response) {
 
   connection.query(sql, params, function (error, results, fields) {
     var isUpdated = String(results.affectedRows);
-    response.send(isUpdated);
+
+    if(isUpdated == "1")
+      response.render(_VIEW + 'common/redirect', {msg : "완료되었습니다.", url : "/board/post/" + request.params.idx});
+    else
+      response.render(_VIEW + 'board/boardUpdate', {data : formData, idx : request.params.idx, isUpdated : false});
   });
 });
 

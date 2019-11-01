@@ -1,64 +1,37 @@
 include /common/header.html
 
 div.board_write.auto-center
-  fieldset
-    legend 글수정
-    h3 글수정
-    div.table
-      div.tr
-        div.lbl
-          label(for="board_name") 작성자
-        div.desc
-          input(type="text" id="board_name" name="name" size="20" title="작성자" required autofocus value= data.name)
-      div.tr
-        div.lbl
-          label(for="board_pw") 비밀번호
-        div.desc
-          input(type="password" id="board_pw" name="pw" size="20" title="비밀번호" required)
-      div.tr
-        div.lbl
-          label(for="board_subject") 제목
-        div.desc
-          input(type="text" id="board_subject" name="subject" size="80" title="제목" required value= data.subject)
-      div.tr
-        div.lbl
-          label(for="board_content") 내용
-        div.desc
-          textarea(id="board_content" name="content" cols="80" rows="10" title="내용" required)= data.content
-    div.btn_group
-      a.btn-default(href="/board/post/" + idx) 취소
-      button.btn-submit(id="submit" type="submit") 완료
+  form(action="/board/post/" + idx + "?_method=PUT" method="post")
+    fieldset
+      legend 글수정
+      h3 글수정
+      div.table
+        div.tr
+          div.lbl
+            label(for="board_name") 작성자
+          div.desc
+            input(type="text" id="board_name" name="name" size="20" title="작성자" required autofocus value= data.name)
+        div.tr
+          div.lbl
+            label(for="board_pw") 비밀번호
+          div.desc
+            input(type="password" id="board_pw" name="pw" size="20" title="비밀번호" required)
+        div.tr
+          div.lbl
+            label(for="board_subject") 제목
+          div.desc
+            input(type="text" id="board_subject" name="subject" size="80" title="제목" required value= data.subject)
+        div.tr
+          div.lbl
+            label(for="board_content") 내용
+          div.desc
+            textarea(id="board_content" name="content" cols="80" rows="10" title="내용" required)= data.content
+      div.btn_group
+        a.btn-default(href="/board/post/" + idx) 취소
+        button.btn-submit(type="submit") 완료
 
 script(type="text/javascript").
-  document.getElementById("submit").addEventListener('click', function(e){
-      e.preventDefault();
-      fn_updateBoard();
-  });
-
-  function fn_updateBoard() {
-    var name = document.getElementById("board_name").value;
-    var pw = document.getElementById("board_pw").value;
-    var subject = document.getElementById("board_subject").value;
-    var content = document.getElementById("board_content").value;
-
-    var comAjax = new ComAjax();
-    comAjax.setUrl("/board/post/#{idx}?_method=PUT");
-    comAjax.setCallback("fn_updateBoardCallback");
-    comAjax.addParam("name", name);
-    comAjax.addParam("pw", pw);
-    comAjax.addParam("subject", subject);
-    comAjax.addParam("content", content);
-    comAjax.ajax();
-  }
-
-  function fn_updateBoardCallback(isUpdated) {
-    if(isUpdated == '1') {
-      alert("완료되었습니다.");
-      window.location.href = "/board/post/#{idx}";
-    }
-    else {
-      alert("비밀번호가 일치하지 않습니다.");
-    }
-  }
+  if("#{isUpdated}" == "false")
+    alert("비밀번호가 일치하지 않습니다.");
 
 include /common/footer.html
