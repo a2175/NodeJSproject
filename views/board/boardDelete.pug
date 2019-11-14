@@ -1,7 +1,7 @@
-include /common/header.html
+include /common/header.pug
 
 div.board_write.auto-center
-  form(action="/board/post/" + idx + "?_method=DELETE" method="post")
+  form(action="/board/posts/" + idx + "?_method=DELETE" method="post")
     fieldset
       legend 글삭제
       h3 글삭제
@@ -12,7 +12,7 @@ div.board_write.auto-center
           div.desc
             input(type="password" id="board_pw" name="pw" size="20" title="비밀번호" required autofocus)
       div.btn_group
-        a.btn-default(href="/board/post/" + idx) 취소
+        a.btn-default(href="/board/posts/" + idx) 취소
         button.btn-submit(type="submit") 완료
 
-include /common/footer.html
+include /common/footer.pug

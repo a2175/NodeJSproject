@@ -1,4 +1,4 @@
-include /common/header.html
+include /common/header.pug
 
 div.board_view.auto-center
   h3 글보기
@@ -24,9 +24,9 @@ div.board_view.auto-center
     div.btn_group
       a#submit.btn-submit(href="") 등록
   div.btn_group
-    a.btn-default(href="/board/page/1") 목록
-    a.btn-submit(href="/board/edit/" + idx) 수정
-    a.btn-submit(href="/board/delete/" + idx) 삭제
+    a.btn-default(href="/board/pages/1") 목록
+    a.btn-submit(href="/board/posts/" + idx + "/edit") 수정
+    a.btn-submit(href="/board/posts/" + idx + "/delete") 삭제
 
 script(type="text/javascript").
   fn_selectCommentList();
@@ -146,4 +146,4 @@ script(type="text/javascript").
     obj.parentElement.remove();
   }
 
-include /common/footer.html
+include /common/footer.pug

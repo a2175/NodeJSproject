@@ -32,6 +32,10 @@ app.get('/', function(request, response) {
   response.render(_VIEW + 'main/main');
 });
 
+app.get('*', function(request, response) {
+  response.status(404).send('404 Not Found');
+});
+
 server.listen(PORT, function() {
   console.log(`server listening on port ${PORT}`);
 });

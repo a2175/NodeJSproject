@@ -6,7 +6,7 @@ var mydb = require(_CONFIG + "database");
 var connection = mysql.createConnection(mydb.dbSet);
 
 // 게시글 페이지 불러오기
-router.get('/page/:page_num', function(request, response) {
+router.get('/pages/:page_num', function(request, response) {
   var nPageIndex = request.params.page_num - 1;
   var nPageRow = 15;
 
@@ -27,7 +27,7 @@ router.get('/page/:page_num', function(request, response) {
 });
 
 // 검색 결과 게시글 페이지 불러오기
-router.get('/page/:page_num/:keyword', function(request, response) {
+router.get('/pages/:page_num/:keyword', function(request, response) {
   var nPageIndex = request.params.page_num - 1;
   var nPageRow = 15;
 
@@ -48,7 +48,10 @@ router.get('/page/:page_num/:keyword', function(request, response) {
 });
 
 // 게시글 불러오기
-router.get('/post/:idx', function(request, response) {
+router.get('/posts/:idx', function(request, response, next) {
+  if(request.params.idx == "write")
+    next();
+
   var sql = "SELECT * FROM board WHERE idx = ?";
   var params = [request.params.idx];
 
@@ -59,18 +62,18 @@ router.get('/post/:idx', function(request, response) {
 });
 
 // 게시글 등록
-router.post('/post', function(request, response) {
+router.post('/posts', function(request, response) {
   var sql = 'INSERT INTO board SET name = ?, pw = ?, subject = ?, content = ?, date=now()';
   var formData = request.body;
   var params = [formData.name, formData.pw, formData.subject, formData.content];
 
   connection.query(sql, params, function (error, results, fields) {
-    response.render(_VIEW + 'common/redirect', {msg : "완료되었습니다.", url : "/board/page/1"});
+    response.render(_VIEW + 'common/redirect', {msg : "완료되었습니다.", url : "/board/pages/1"});
   });
 });
 
 // 게시글 수정
-router.put('/post/:idx', function(request, response) {
+router.put('/posts/:idx', function(request, response) {
   var sql = "UPDATE board SET name = ?, subject = ?, content = ? WHERE idx = ? AND pw = ?";
   var formData = request.body;
   var params = [formData.name, formData.subject, formData.content, request.params.idx, formData.pw];
@@ -79,14 +82,14 @@ router.put('/post/:idx', function(request, response) {
     var isUpdated = String(results.affectedRows);
 
     if(isUpdated == "1")
-      response.render(_VIEW + 'common/redirect', {msg : "완료되었습니다.", url : "/board/post/" + request.params.idx});
+      response.render(_VIEW + 'common/redirect', {msg : "완료되었습니다.", url : "/board/posts/" + request.params.idx});
     else
       response.render(_VIEW + 'board/boardUpdate', {data : formData, idx : request.params.idx, isUpdated : false});
   });
 });
 
 // 게시글 삭제
-router.delete('/post/:idx', function(request, response) {
+router.delete('/posts/:idx', function(request, response) {
   var sql = "DELETE FROM board WHERE idx = ? AND pw = ?";
   var formData = request.body;
   var params = [request.params.idx, formData.pw];
@@ -95,19 +98,19 @@ router.delete('/post/:idx', function(request, response) {
     var isDeleted = results.affectedRows;
 
     if(isDeleted)
-      response.render(_VIEW + 'common/redirect', {msg : "완료되었습니다.", url : "/board/page/1"});
+      response.render(_VIEW + 'common/redirect', {msg : "완료되었습니다.", url : "/board/pages/1"});
     else
-      response.render(_VIEW + 'common/redirect', {msg : "비밀번호가 일치하지 않습니다.", url : "/board/delete/" + request.params.idx});
+      response.render(_VIEW + 'common/redirect', {msg : "비밀번호가 일치하지 않습니다.", url : "/board/posts/" + request.params.idx + "/delete"});
   });
 });
 
 // 게시글 작성 페이지 불러오기
-router.get('/write', function(request, response) {
+router.get('/posts/write', function(request, response) {
   response.render(_VIEW + 'board/boardWrite');
 });
 
 // 게시글 수정 페이지 불러오기
-router.get('/edit/:idx', function(request, response) {
+router.get('/posts/:idx/edit', function(request, response) {
   var sql = "SELECT * FROM board WHERE idx = ?";
   var params = [request.params.idx];
 
@@ -118,7 +121,7 @@ router.get('/edit/:idx', function(request, response) {
 });
 
 // 게시글 삭제 페이지 불러오기
-router.get('/delete/:idx', function(request, response) {
+router.get('/posts/:idx/delete', function(request, response) {
   response.render(_VIEW + 'board/boardDelete', {idx : request.params.idx});
 });
 

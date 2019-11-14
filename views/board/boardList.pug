@@ -1,4 +1,4 @@
-include /common/header.html
+include /common/header.pug
 
 div.board_list.auto-center
   h3= "총 게시물 수 : " + data.listNum
@@ -19,14 +19,14 @@ div.board_list.auto-center
         tr
           td= list.idx
           td.al_l
-            a(href="/board/post/" + list.idx)= list.commentNum > 0 ? list.subject + " ["+list.commentNum+"]" : list.subject
+            a(href="/board/posts/" + list.idx)= list.commentNum > 0 ? list.subject + " ["+list.commentNum+"]" : list.subject
           td= list.name
           td= list.date.replace('T', ' ').substr(0, 19)
   div.btn_group
     span 제목 검색:
     input#keyword(type="text" name="keyword" value=keyword)
     a.btn-submit#search(href="") 검색
-    a.btn-default(href="/board/write") 작성
+    a.btn-default(href="/board/posts/write") 작성
   div#PAGE_NAVI(style="margin:auto; display:table;")
 
 script(type="text/javascript").
@@ -34,7 +34,7 @@ script(type="text/javascript").
     divId : "PAGE_NAVI",
     pageIndex : "#{page_num}",
     totalCount : #{data.listNum},
-    eventName : "/board/page/",
+    eventName : "/board/pages/",
     keyword : "#{keyword}"
   };
   gfn_renderPaging(params);
@@ -46,7 +46,7 @@ script(type="text/javascript").
 
   function fn_openBoardSearchList() {
     keyword = document.getElementById("keyword").value;
-    location.href = "/board/page/1/" + keyword;
+    location.href = "/board/pages/1/" + keyword;
   }
 
-include /common/footer.html
+include /common/footer.pug

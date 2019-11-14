@@ -1,7 +1,7 @@
-include /common/header.html
+include /common/header.pug
 
 div.board_write.auto-center
-  form(action="/board/post/" + idx + "?_method=PUT" method="post")
+  form(action="/board/posts/" + idx + "?_method=PUT" method="post")
     fieldset
       legend 글수정
       h3 글수정
@@ -27,11 +27,11 @@ div.board_write.auto-center
           div.desc
             textarea(id="board_content" name="content" cols="80" rows="10" title="내용" required)= data.content
       div.btn_group
-        a.btn-default(href="/board/post/" + idx) 취소
+        a.btn-default(href="/board/posts/" + idx) 취소
         button.btn-submit(type="submit") 완료
 
 script(type="text/javascript").
   if("#{isUpdated}" == "false")
     alert("비밀번호가 일치하지 않습니다.");
 
-include /common/footer.html
+include /common/footer.pug
