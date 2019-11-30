@@ -5,9 +5,9 @@ var mydb = require(_CONFIG + "database");
 
 var connection = mysql.createConnection(mydb.dbSet);
 
-router.get('/:idx', function(request, response) {
+router.get('/:post_idx', function(request, response) {
   var sql = "SELECT * FROM comment WHERE board_idx = ? ORDER BY idx";
-  var params = [request.params.idx];
+  var params = [request.params.post_idx];
 
   connection.query(sql, params, function (error, results, fields) {
     var list = mydb.toJSON(results);
@@ -19,10 +19,10 @@ router.get('/:idx', function(request, response) {
   });
 });
 
-router.post('/:idx', function(request, response) {
+router.post('/:post_idx', function(request, response) {
   var sql = "INSERT INTO comment SET name = ?, pw = ?, content = ?, board_idx = ?, date=now()";
   var formData = request.body;
-  var params = [formData.name, formData.pw, formData.content, request.params.idx];
+  var params = [formData.name, formData.pw, formData.content, request.params.post_idx];
 
   connection.query(sql, params, function (error, results, fields) {
       response.end();
