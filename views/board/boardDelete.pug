@@ -1,7 +1,8 @@
 include /common/header.pug
 
 div.board_write.auto-center
-  form(action="/board/posts/" + idx + "?_method=DELETE" method="post")
+  form#form(action=`/board/posts/${idx}` method="POST")
+    input(type="hidden" name="_method" value="DELETE")
     fieldset
       legend 글삭제
       h3 글삭제
@@ -14,5 +15,28 @@ div.board_write.auto-center
       div.btn_group
         a.btn-default(href="/board/posts/" + idx) 취소
         button.btn-submit(type="submit") 완료
+
+script(type="text/javascript").
+  document.getElementById("form").addEventListener('submit', function(e){
+    e.preventDefault();
+    fn_deleteBoard(this);
+  });
+
+  function fn_deleteBoard(form){
+    var comAjax = new ComAjax(form);
+    comAjax.setUrl(form.action);
+    comAjax.setCallback('fn_deleteBoardCallback');
+    comAjax.ajax();
+  }
+
+  function fn_deleteBoardCallback(isDeleted){
+    if(isDeleted == '1'){
+      alert("완료되었습니다.");
+      window.location.href = "/board/pages/1";
+    }
+    else{
+      alert("비밀번호가 일치하지 않습니다.");
+    }
+  }
 
 include /common/footer.pug

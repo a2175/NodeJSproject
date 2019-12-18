@@ -1,7 +1,8 @@
 include /common/header.pug
 
 div.board_write.auto-center
-  form(action="/board/posts/" + idx + "?_method=PUT" method="post")
+  form#form(action=`/board/posts/${idx}` method="POST")
+    input(type="hidden" name="_method" value="PUT")
     fieldset
       legend 글수정
       h3 글수정
@@ -31,7 +32,26 @@ div.board_write.auto-center
         button.btn-submit(type="submit") 완료
 
 script(type="text/javascript").
-  if("#{isUpdated}" == "false")
-    alert("비밀번호가 일치하지 않습니다.");
+  document.getElementById("form").addEventListener('submit', function(e){
+    e.preventDefault();
+    fn_updateBoard(this);
+  });
+
+  function fn_updateBoard(form){
+  	var comAjax = new ComAjax(form);
+  	comAjax.setUrl(form.action);
+  	comAjax.setCallback('fn_updateBoardCallback');
+  	comAjax.ajax();
+  }
+
+  function fn_updateBoardCallback(isUpdated){
+  	if(isUpdated == '1'){
+  		alert("완료되었습니다.");
+      window.location.href = "/board/posts/#{idx}";
+  	}
+  	else{
+  		alert("비밀번호가 일치하지 않습니다.");
+  	}
+  }
 
 include /common/footer.pug

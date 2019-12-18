@@ -13,16 +13,17 @@ div.board_view.auto-center
       div.lbl 내용
       div.desc.content= data.content
   div#comment_list
-  div.submit_comment
-    span.input
-      div.tr
-        input#name(type="text" placeholder="닉네임")
-      div.tr
-        input#pw(type="password" placeholder="비밀번호")
-    span.desc
-      textarea#content(rows="5" placeholder="내용")
-    div.btn_group
-      a#submit.btn-submit(href="") 등록
+  form#comment_form(action=`/comment/${idx}` method="post")
+    div.submit_comment
+      span.input
+        div.tr
+          input#name(type="text" name="name" placeholder="닉네임")
+        div.tr
+          input#pw(type="password" name="pw" placeholder="비밀번호")
+      span.desc
+        textarea#content(rows="5" name="content" placeholder="내용")
+      div.btn_group
+        button.btn-submit(type="submit") 등록
   div.btn_group
     a.btn-default(href="/board/pages/1") 목록
     a.btn-submit(href="/board/posts/" + idx + "/edit") 수정
@@ -31,9 +32,9 @@ div.board_view.auto-center
 script(type="text/javascript").
   fn_selectCommentList();
 
-  document.getElementById("submit").addEventListener('click', function(e){
+  document.getElementById("comment_form").addEventListener('submit', function(e){
     e.preventDefault();
-    fn_insertComment();
+    fn_insertComment(this);
   });
 
   function fn_selectCommentList() {
@@ -69,32 +70,15 @@ script(type="text/javascript").
     }
   }
 
-  function fn_checkComment(name, pw, content) {
-    if(name.length == 0) { alert("닉네임을 입력해주세요."); return false; }
-    if(pw.length == 0) { alert("비밀번호를 입력해주세요."); return false; }
-    if(content.length == 0) { alert("내용을 입력해주세요."); return false; }
+  function fn_insertComment(form) {
+    var comAjax = new ComAjax(form);
+    comAjax.setUrl(form.action);
+    comAjax.setCallback('fn_selectCommentList');
+    comAjax.ajax();
 
-    return true;
-  }
-
-  function fn_insertComment() {
-    var name = document.getElementById("name").value;
-    var pw = document.getElementById("pw").value;
-    var content = document.getElementById("content").value;
-
-    if(fn_checkComment(name, pw, content)) {
-      document.getElementById("name").value = '';
-      document.getElementById("pw").value = '';
-      document.getElementById("content").value = '';
-
-      var comAjax = new ComAjax();
-      comAjax.setUrl("/comment/#{idx}");
-      comAjax.setCallback('fn_selectCommentList');
-      comAjax.addParam("name", name);
-      comAjax.addParam("pw", pw);
-      comAjax.addParam("content", content);
-      comAjax.ajax();
-    }
+    document.getElementById("name").value = '';
+    document.getElementById("pw").value = '';
+    document.getElementById("content").value = '';
   }
 
   function fn_openDeleteComment(obj) {
@@ -103,32 +87,32 @@ script(type="text/javascript").
 
     var div = document.createElement("div");
     div.className = "btn_group";
-    var str = "<input type='password' id='commentpw' placeholder='비밀번호'>" +
-              "<a id='commentdelete' class='btn-submit' href=''>확인</a>" +
-              "<a id='commentcencel' class='btn-submit' href=''>취소</a>";
+    var str =  "<form id='comment_delete_form' action='' method='post'>" +
+                 "<input type='hidden' name='_method' value='DELETE'>" +
+                 "<input type='password' id='commentpw' name='pw' placeholder='비밀번호' required>" +
+                 "<button id='commentdelete' class='btn-submit' type='submit'>확인</button>" +
+                 "<button id='commentcencel' class='btn-submit'>취소</button>" +
+               "</form>";
     div.innerHTML = str;
 
     obj.parentElement.appendChild(div);
 
-    document.querySelector("a[id='commentdelete']").addEventListener('click', function(e){
+    document.getElementById("comment_delete_form").addEventListener('submit', function(e){
       e.preventDefault();
       fn_deleteComment(this);
     });
 
-    document.querySelector("a[id='commentcencel']").addEventListener('click', function(e){
+    document.getElementById("commentcencel").addEventListener('click', function(e){
       e.preventDefault();
       fn_deleteCencel(this);
     });
   }
 
-  function fn_deleteComment(obj) {
-    var idx = obj.parentElement.parentElement.querySelector("#idx").value;
-    var pw = obj.parentElement.querySelector("#commentpw").value;
-
-    var comAjax = new ComAjax();
-    comAjax.setUrl("/comment/" + idx + "?_method=DELETE");
+  function fn_deleteComment(form) {
+    var idx = form.parentElement.parentElement.querySelector("#idx").value;
+    var comAjax = new ComAjax(form);
+    comAjax.setUrl(`/comment/${idx}`);
     comAjax.setCallback("fn_deleteCommentCallback");
-    comAjax.addParam("pw", pw);
     comAjax.ajax();
   }
 
