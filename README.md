@@ -3,7 +3,12 @@ Node.js + Express + Pug + Socket.io + MySQL
 RESTful 기반의 Express + Pug를 사용한 간단한 CRUD 게시판과
 Socket.io를 사용한 실시간 채팅 프로젝트입니다.
 
-#version = 2.03v
+#version = 2.10v
+
+[NodeJSproject 2.10v]
+1. MVC 구조로 변경
+2. 게시글 수정, 삭제 js 수정
+3. redirect.pug 삭제
 
 [NodeJSproject 2.03v]
 1. URL 수정
