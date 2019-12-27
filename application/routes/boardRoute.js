@@ -16,14 +16,9 @@ router.get('/pages/:page_num/:keyword', async function(request, response) {
 });
 
 // 게시글 불러오기
-router.get('/posts/:idx', async function(request, response, next) {
-  if(isNaN(request.params.idx)) {
-    next();
-  }
-  else {
-    var data = await boardService.selectBoardDetail(request);
-    response.render(_VIEW + 'board/boardDetail', {data : data, idx : request.params.idx});
-  }
+router.get('/posts/:idx(\\d+)', async function(request, response, next) {
+  var data = await boardService.selectBoardDetail(request);
+  response.render(_VIEW + 'board/boardDetail', {data : data, idx : request.params.idx});
 });
 
 // 게시글 등록
