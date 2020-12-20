@@ -15,7 +15,7 @@ function ComSubmit(opt_formId) {
     var formMethod = "POST";
 
     if(formId == "commonForm"){
-        document.getElementById("commonForm").innerHTML = "";
+        document.getElementById("commonForm").textContent = "";
     }
 
     this.setUrl = function setUrl(url){
@@ -87,14 +87,12 @@ recordCount : 페이지당 레코드 수
 totalCount : 전체 조회 건수
 eventName : 페이징 하단의 숫자 등의 버튼이 클릭되었을 때 호출될 함수 이름
 */
-var gfv_eventName = null;
-var gfv_keyword = null;
 function gfn_renderPaging(params){
     var divId = params.divId; //페이징이 그려질 div id
     var totalCount = params.totalCount; //전체 조회 건수
     var currentIndex = params.pageIndex; //현재 위치
-    gfv_eventName = params.eventName;
-    gfv_keyword = params.keyword;
+    var gfv_eventName = params.eventName;
+    var gfv_keyword = params.keyword;
 
     if(gfn_isNull(currentIndex) == true){
         currentIndex = 1;
@@ -107,47 +105,97 @@ function gfn_renderPaging(params){
 
     var totalIndexCount = Math.ceil(totalCount / recordCount); // 전체 인덱스 수
 
-    var preStr = "";
-    var postStr = "";
-    var str = "";
-
     var first = (parseInt((currentIndex-1) / 10) * 10) + 1;
     var last = (parseInt(totalIndexCount/10) < currentIndex/10) ? totalIndexCount%10 : 10;
     var prev = (parseInt((currentIndex-1)/10)*10) - 9 > 0 ? (parseInt((currentIndex-1)/10)*10) - 9 : 1;
     var next = (parseInt((currentIndex-1)/10)+1) * 10 + 1 < totalIndexCount ? (parseInt((currentIndex-1)/10)+1) * 10 + 1 : totalIndexCount;
 
     if(totalIndexCount > 10){ //전체 인덱스가 10이 넘을 경우, 맨앞, 앞 태그 작성
-        preStr += "<a href='#this' class='pad_5' onclick='_movePage(1)'>[<<]</a>" +
-                "<a href='#this' class='pad_5' onclick='_movePage("+prev+")'>[<]</a>";
+        var firstLink = getLinkElement("[<<]");
+        var prevLink = getLinkElement("[<]");
+
+        firstLink.addEventListener('click', function(e){
+            e.preventDefault();
+            movePage(1, gfv_eventName, gfv_keyword);
+        });
+        prevLink.addEventListener('click', function(e){
+            e.preventDefault();
+            movePage(prev, gfv_eventName, gfv_keyword);
+        });
+
+        document.getElementById(divId).appendChild(firstLink);
+        document.getElementById(divId).appendChild(prevLink);
     }
     else if(totalIndexCount <=10 && totalIndexCount > 1){ //전체 인덱스가 10보다 작을경우, 맨앞 태그 작성
-        preStr += "<a href='#this' class='pad_5' onclick='_movePage(1)'>[<<]</a>";
-    }
+        var firstLink = getLinkElement("[<<]");
+        firstLink.addEventListener('click', function(e){
+            e.preventDefault();
+            movePage(1, gfv_eventName, gfv_keyword);
+        });
 
-    if(totalIndexCount > 10){ //전체 인덱스가 10이 넘을 경우, 맨뒤, 뒤 태그 작성
-        postStr += "<a href='#this' class='pad_5' onclick='_movePage("+next+")'>[>]</a>" +
-                    "<a href='#this' class='pad_5' onclick='_movePage("+totalIndexCount+")'>[>>]</a>";
-    }
-    else if(totalIndexCount <=10 && totalIndexCount > 1){ //전체 인덱스가 10보다 작을경우, 맨뒤 태그 작성
-        postStr += "<a href='#this' class='pad_5' onclick='_movePage("+totalIndexCount+")'>[>>]</a>";
+        document.getElementById(divId).appendChild(firstLink);
     }
 
     for(var i=first; i<(first+last); i++){
+        var link = getLinkElement(i);
+        (function(index){
+            link.addEventListener('click', function(e){
+                e.preventDefault();
+                movePage(index, gfv_eventName, gfv_keyword);
+            });
+        }(i));
+
         if(i != currentIndex){
-            str += "<a href='#this' class='pad_5' onclick='_movePage("+i+")'>"+i+"</a>";
+            document.getElementById(divId).appendChild(link);
         }
         else{
-            str += "<b><a href='#this' class='pad_5' onclick='_movePage("+i+")'>"+i+"</a></b>";
+            var b = document.createElement("b");
+            b.appendChild(link);
+            document.getElementById(divId).appendChild(b);
         }
     }
-    document.getElementById(divId).innerHTML = preStr + str + postStr;
-}
 
-function _movePage(value){
-    if(gfn_isNull(gfv_keyword)) {
-        location.href = gfv_eventName+value;
+    if(totalIndexCount > 10){ //전체 인덱스가 10이 넘을 경우, 맨뒤, 뒤 태그 작성
+        var postLink = getLinkElement("[>]");
+        var endLink = getLinkElement("[>>]");
+
+        postLink.addEventListener('click', function(e){
+            e.preventDefault();
+            movePage(next, gfv_eventName, gfv_keyword);
+        });
+        endLink.addEventListener('click', function(e){
+            e.preventDefault();
+            movePage(totalIndexCount, gfv_eventName, gfv_keyword);
+        });
+
+        document.getElementById(divId).appendChild(postLink);
+        document.getElementById(divId).appendChild(endLink);
     }
-    else {
-        location.href = gfv_eventName+value+"/"+gfv_keyword;
+    else if(totalIndexCount <=10 && totalIndexCount > 1){ //전체 인덱스가 10보다 작을경우, 맨뒤 태그 작성
+        var endLink = getLinkElement("[>>]");
+        endLink.addEventListener('click', function(e){
+            e.preventDefault();
+            movePage(totalIndexCount, gfv_eventName, gfv_keyword);
+        });
+
+        document.getElementById(divId).appendChild(endLink);
+    }
+
+    function getLinkElement(textContent){
+        var link = document.createElement("a");
+        link.href = "#this";
+        link.className = "pad_5";
+        link.textContent = textContent;
+    
+        return link;
+    }
+    
+    function movePage(value, gfv_eventName, gfv_keyword){
+        if(gfn_isNull(gfv_keyword)) {
+            location.href = gfv_eventName + value;
+        }
+        else {
+            location.href = gfv_eventName + value + "/" + gfv_keyword;
+        }
     }
 }

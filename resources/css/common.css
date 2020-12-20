@@ -111,7 +111,7 @@ span.middle.all ~ * { display: inline-block; vertical-align: middle; }
 #comment_list > .table > .tr > .lbl { width: 15%; font-weight: bold; }
 #comment_list > .table > .tr > .desc { width: 70%; }
 #comment_list > .table > .tr > .date { text-align: right; width: 12%; }
-#comment_list > .table > .tr > .delete { width: 3%; }
+#comment_list > .table > .tr > .delete { width: 3%; cursor:pointer; }
 #comment_list > .table > .tr .btn_group { position: absolute; top: -22px;  right: 30px; }
 #comment_list > .table > .tr .btn_group > input { width: 100px }
 #comment_list > .table > .tr .btn_group > .btn-submit { font-size: 13px; width: 70px; }

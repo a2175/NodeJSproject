@@ -47,27 +47,53 @@ script(type="text/javascript").
 
   function fn_selectCommentListCallback(data) {
     data = JSON.parse(data);
-    var body = document.getElementById("comment_list");
-    var str = "<h4>총 댓글 수 : " + data.totalCount + "</h4>";
-    str += "<div class='table'>";
-    for(var key in data.list) {
-      str +=  "<div class='tr'>" +
-                "<div class='lbl'>" + data.list[key].name + "</div>" +
-                "<div class='desc'>" + data.list[key].content + "</div>" +
-                "<div class='date'>" + data.list[key].date.replace('T', ' ').substr(0, 19) + "</div>" +
-                "<div class='delete'>" + "<a href='#' id='opendel'><img src='/resources/img/delete.jpg'></a>" + "</div>" +
-                "<input type='hidden' id='idx' value=" + data.list[key].idx + ">" +
-              "</div>";
-    };
-    str += "</div>";
-    body.innerHTML = str;
+    var commentList = document.getElementById("comment_list");
+    commentList.textContent = "";
 
-    for(i=0; i<body.querySelectorAll('#opendel').length; i++) {
-      body.querySelectorAll('#opendel')[i].addEventListener('click', function(e){
-        e.preventDefault();
-        fn_openDeleteComment(this.parentElement);
-      });
+    var totalCount = document.createElement("h4");
+    totalCount.textContent = "총 댓글 수 : " + data.totalCount;
+    commentList.appendChild(totalCount);
+
+    var table = document.createElement("div");
+    table.className = "table";
+    
+    for(var key in data.list) {
+      var tr = document.createElement("div");
+      tr.className = "tr";
+      table.appendChild(tr);
+
+      var name = document.createElement("div");
+      name.className = "lbl";
+      name.textContent = data.list[key].name;
+      tr.appendChild(name);
+
+      var content = document.createElement("div");
+      content.className = "desc";
+      content.textContent = data.list[key].content;
+      tr.appendChild(content);
+
+      var date = document.createElement("div");
+      date.className = "date";
+      date.textContent = data.list[key].date.replace('T', ' ').substr(0, 19);
+      tr.appendChild(date);
+
+      var deleteButton = document.createElement("div");
+      deleteButton.className = "delete";
+
+      var deleteButtonImg = document.createElement("img");
+      deleteButtonImg.src = "/resources/img/delete.jpg";
+      deleteButton.appendChild(deleteButtonImg);
+
+      tr.appendChild(deleteButton);
+
+      (function(idx){
+          deleteButton.addEventListener('click', function(){
+              fn_openDeleteComment(this, idx);
+          });
+      }(data.list[key].idx));
     }
+    
+    commentList.appendChild(table);
   }
 
   function fn_insertComment(form) {
@@ -81,25 +107,50 @@ script(type="text/javascript").
     document.getElementById("content").value = '';
   }
 
-  function fn_openDeleteComment(obj) {
-    if(document.getElementById("comment_list").querySelector(".btn_group") != null)
+  function fn_openDeleteComment(obj, idx) {
+    if(document.getElementById("comment_list").querySelector(".btn_group"))
       document.getElementById("comment_list").querySelector(".btn_group").remove();
 
     var div = document.createElement("div");
     div.className = "btn_group";
-    var str =  "<form id='comment_delete_form' action='' method='post'>" +
-                 "<input type='hidden' name='_method' value='DELETE'>" +
-                 "<input type='password' id='commentpw' name='pw' placeholder='비밀번호' required>" +
-                 "<button id='commentdelete' class='btn-submit' type='submit'>확인</button>" +
-                 "<button id='commentcencel' class='btn-submit'>취소</button>" +
-               "</form>";
-    div.innerHTML = str;
 
+    var form = document.createElement("form");
+    form.id = "comment_delete_form";
+    form.method = "POST";
+    
+    var method = document.createElement("input");
+    method.type = "hidden";
+    method.name = "_method";
+    method.value = "DELETE";
+    form.appendChild(method);
+
+    var password = document.createElement("input");
+    password.type = "password";
+    password.id = "commentpw";
+    password.name = "pw";
+    password.placeholder = "비밀번호";
+    password.required = true;
+    form.appendChild(password);
+
+    var deleteConfirm = document.createElement("button");
+    deleteConfirm.id = "commentdelete";
+    deleteConfirm.className = "btn-submit";
+    deleteConfirm.type = "submit";
+    deleteConfirm.textContent = "확인";
+    form.appendChild(deleteConfirm);
+
+    var deleteCencel = document.createElement("button");
+    deleteCencel.id = "commentcencel";
+    deleteCencel.className = "btn-submit";
+    deleteCencel.textContent = "취소";
+    form.appendChild(deleteCencel);
+
+    div.appendChild(form);
     obj.parentElement.appendChild(div);
 
     document.getElementById("comment_delete_form").addEventListener('submit', function(e){
       e.preventDefault();
-      fn_deleteComment(this);
+      fn_deleteComment(this, idx);
     });
 
     document.getElementById("commentcencel").addEventListener('click', function(e){
@@ -108,8 +159,7 @@ script(type="text/javascript").
     });
   }
 
-  function fn_deleteComment(form) {
-    var idx = form.parentElement.parentElement.querySelector("#idx").value;
+  function fn_deleteComment(form, idx) {
     var comAjax = new ComAjax(form);
     comAjax.setUrl(`/comment/${idx}`);
     comAjax.setCallback("fn_deleteCommentCallback");
