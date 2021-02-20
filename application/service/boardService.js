@@ -1,9 +1,14 @@
 var boardDAO = require(_DAO + "boardDAO");
 
 class BoardService {
-
+  
   async selectBoardList(request) {
-    var result = await boardDAO.selectBoardList(request);
+    var result;
+    if(request.querystring.keyword)
+      result = await boardDAO.selectBoardSearchList(request);
+    else
+      result = await boardDAO.selectBoardList(request);
+    
     var data = {
       list: rowsToJson(result[0]),
       listNum: result[1][0].count
@@ -11,16 +16,6 @@ class BoardService {
 
     return data;
   };
-
-  async selectBoardSearchList(request) {
-    var result = await boardDAO.selectBoardSearchList(request);
-    var data = {
-      list: rowsToJson(result[0]),
-      listNum: result[1][0].count
-    };
-
-    return data;
-  }
 
   async selectBoardDetail(request) {
     var result = await boardDAO.selectBoardDetail(request);

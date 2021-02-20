@@ -1,18 +1,15 @@
 var express = require('express');
 var router = express.Router();
+var url = require('url');
+var querystring = require('querystring');
 
 var boardService = require(_SERVICE + "boardService");
 
 // 게시글 페이지 불러오기
-router.get('/pages/:page_num', async function(request, response) {
+router.get('/posts', async function(request, response) {
+  request.querystring = querystring.parse(url.parse(request.url).query);
   var data = await boardService.selectBoardList(request);
-  response.render(_VIEW + 'board/boardList', {data : data, page_num : request.params.page_num});
-});
-
-// 검색 결과 게시글 페이지 불러오기
-router.get('/pages/:page_num/:keyword', async function(request, response) {
-  var data = await boardService.selectBoardSearchList(request);
-  response.render(_VIEW + 'board/boardList', {data : data, page_num : request.params.page_num, keyword : request.params.keyword});
+  response.render(_VIEW + 'board/boardList', {data : data, request_querystring : request.querystring});
 });
 
 // 게시글 불러오기
@@ -24,7 +21,7 @@ router.get('/posts/:idx(\\d+)', async function(request, response, next) {
 // 게시글 등록
 router.post('/posts', async function(request, response) {
   await boardService.insertBoard(request);
-  response.redirect("/board/pages/1");
+  response.redirect("/board/posts");
 });
 
 // 게시글 수정

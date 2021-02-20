@@ -6,8 +6,10 @@ var connection = mysql.createConnection(mydb.dbSet);
 class BoardDAO {
 
   selectBoardList(request) {
-    var nPageIndex = request.params.page_num - 1;
+    var nPageIndex = 0;
     var nPageRow = 15;
+
+    if(request.querystring.page) nPageIndex = request.querystring.page - 1;
 
     var START = nPageIndex * nPageRow;
     var END = nPageRow;
@@ -26,15 +28,17 @@ class BoardDAO {
   }
 
   selectBoardSearchList(request) {
-    var nPageIndex = request.params.page_num - 1;
+    var nPageIndex = 0;
     var nPageRow = 15;
+
+    if(request.querystring.page) nPageIndex = request.querystring.page - 1;
 
     var START = nPageIndex * nPageRow;
     var END = nPageRow;
 
     var sql1 = "SELECT *, (SELECT count(IDX) FROM comment WHERE board_idx = board.idx) AS commentNum FROM board WHERE subject LIKE CONCAT('%', ?, '%') ORDER BY idx DESC LIMIT ?, ?;";
     var sql2 = "SELECT count(*) AS count FROM board WHERE subject LIKE CONCAT('%', ?, '%')";
-    var params = [request.params.keyword, START, END, request.params.keyword];
+    var params = [request.querystring.keyword, START, END, request.querystring.keyword];
 
     var result = new Promise(function(resolve, reject) {
       connection.query(sql1 + sql2, params, function (error, results, fields) {

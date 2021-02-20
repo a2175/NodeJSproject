@@ -24,7 +24,7 @@ div.board_list.auto-center
           td= list.date.replace('T', ' ').substr(0, 19)
   div.btn_group
     span 제목 검색:
-    input#keyword(type="text" name="keyword" value=keyword)
+    input#keyword(type="text" name="keyword" value=request_querystring.keyword)
     a.btn-submit#search(href="") 검색
     a.btn-default(href="/board/posts/write") 작성
   div#PAGE_NAVI(style="margin:auto; display:table;")
@@ -32,10 +32,10 @@ div.board_list.auto-center
 script(type="text/javascript").
   var params = {
     divId : "PAGE_NAVI",
-    pageIndex : "#{page_num}",
+    pageIndex : "#{request_querystring.page}",
     totalCount : #{data.listNum},
-    eventName : "/board/pages/",
-    keyword : "#{keyword}"
+    eventName : "/board/posts",
+    keyword : "#{request_querystring.keyword}"
   };
   gfn_renderPaging(params);
 
@@ -46,7 +46,12 @@ script(type="text/javascript").
 
   function fn_openBoardSearchList() {
     keyword = document.getElementById("keyword").value;
-    location.href = "/board/pages/1/" + keyword;
+
+    var comSubmit = new ComSubmit();
+  	comSubmit.setUrl("/board/posts");
+    comSubmit.setMethod("GET");
+    comSubmit.addParam("keyword", keyword);
+  	comSubmit.submit();
   }
 
 include /common/footer.pug

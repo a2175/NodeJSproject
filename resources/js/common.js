@@ -9,21 +9,23 @@ function gfn_isNull(str) {
     return false;
 }
 
-function ComSubmit(opt_formId) {
-    var formId = gfn_isNull(opt_formId) == true ? "commonForm" : opt_formId;
-    var formUrl = "";
-    var formMethod = "POST";
+function ComSubmit(form) {
+    var newForm;
 
-    if(formId == "commonForm"){
-        document.getElementById("commonForm").textContent = "";
+    if(form) {
+        newForm = form;
     }
-
+    else {
+        newForm = document.createElement('form');
+        document.body.appendChild(newForm);
+    }
+    
     this.setUrl = function setUrl(url){
-        formUrl = url;
+        newForm.action = url;
     };
 
     this.setMethod = function setMethod(method){
-        formMethod = method;
+        newForm.method = method;
     };
 
     this.addParam = function addParam(key, value){
@@ -31,14 +33,11 @@ function ComSubmit(opt_formId) {
         input.type = "hidden";
         input.name = key;
         input.value = value;
-        document.getElementById(formId).appendChild(input);
+        newForm.appendChild(input);
     };
 
     this.submit = function submit(){
-        var frm = document.getElementById(formId);
-        frm.action = formUrl;
-        frm.method = formMethod;
-        frm.submit();
+        newForm.submit();
     };
 }
 
@@ -53,7 +52,7 @@ function ComAjax(form){
     };
 
     this.setMethod = function setMethod(method){
-        formMethod = method;
+        formMethod = method.toUpperCase();
     };
 
     this.setCallback = function setCallback(callBack){
@@ -65,13 +64,23 @@ function ComAjax(form){
     };
 
     this.ajax = function ajax(){
-        var object = {};
-        formData.forEach(function(value, key){
-            object[key] = value;
-        });
+        // GET
+        if(formMethod == "GET") {
+            formUrl = formUrl + "?" + new URLSearchParams(formData).toString();
+            formData = null;
+        }
+        // PUT & DELETE
+        else if(formMethod == "POST" && formData.get("_method")) {
+            var object = {};
+            formData.forEach(function(value, key){
+                object[key] = value;
+            });
+            formData = JSON.stringify(object);
+        }
+   
         fetch(formUrl, {
             method: formMethod,
-            body: formMethod == "POST" ? JSON.stringify(object) : null,
+            body: formData,
             headers: {
                 'content-type': "application/json"
             }
@@ -191,11 +200,11 @@ function gfn_renderPaging(params){
     }
     
     function movePage(value, gfv_eventName, gfv_keyword){
-        if(gfn_isNull(gfv_keyword)) {
-            location.href = gfv_eventName + value;
-        }
-        else {
-            location.href = gfv_eventName + value + "/" + gfv_keyword;
-        }
+        var comSubmit = new ComSubmit();
+        comSubmit.setUrl(gfv_eventName);
+        comSubmit.setMethod("GET");
+        comSubmit.addParam("page", value);
+        if(!gfn_isNull(gfv_keyword)) comSubmit.addParam("keyword", gfv_keyword);
+        comSubmit.submit();
     }
 }
