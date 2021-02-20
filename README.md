@@ -3,7 +3,11 @@ Node.js + Express + Pug + Socket.io + MySQL
 RESTful 기반의 Express + Pug를 사용한 간단한 CRUD 게시판과
 Socket.io를 사용한 실시간 채팅 프로젝트입니다.
 
-#version = 2.12v
+#version = 2.13v
+
+[NodeJSproject 2.13v]
+1. RESTful API 규칙에 가깝게 코드 수정
+2. common.js(ComSubmit, ComAjax, movePage) 수정
 
 [NodeJSproject 2.12v]
 1. boardDetail.pug, chat.pug, common.js에서 innerHTML 사용을 createElement(), appendChild()로 대체
