@@ -69,8 +69,8 @@ function ComAjax(form){
             formUrl = formUrl + "?" + new URLSearchParams(formData).toString();
             formData = null;
         }
-        // PUT & DELETE
-        else if(formMethod == "POST" && formData.get("_method")) {
+        // POST & PUT & DELETE
+        else {
             var object = {};
             formData.forEach(function(value, key){
                 object[key] = value;
