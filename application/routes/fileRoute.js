@@ -5,7 +5,7 @@ var multer = require('multer');
 
 var fileService = require(_SERVICE + "fileService");
 var upload = multer({ 
-    dest: 'uploadedFiles/',
+    dest: _ROOT + 'uploadedFiles/',
     limits: { fileSize: 1024 * 1024 }
 }).single('file'); 
 
