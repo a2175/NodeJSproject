@@ -32,9 +32,15 @@ app.use(methodOverride(function(req, res){
   }
 }));
 
-app.use('/board', require(_ROUTES + 'boardRoute'));
-app.use('/comment', require(_ROUTES + 'commentRoute'));
-app.use('/chat', require(_ROUTES + 'chatRoute')(server));
+global._ROUTE_POST = "/post";
+global._ROUTE_COMMENT = "/comment";
+global._ROUTE_FILE = "/file";
+global._ROUTE_CHAT = "/chat";
+
+app.use(_ROUTE_POST, require(_ROUTES + 'boardRoute'));
+app.use(_ROUTE_COMMENT, require(_ROUTES + 'commentRoute'));
+app.use(_ROUTE_FILE, require(_ROUTES + 'fileRoute'));
+app.use(_ROUTE_CHAT, require(_ROUTES + 'chatRoute')(server));
 
 app.get('/', function(request, response) {
   response.render(_VIEW + 'main/main');

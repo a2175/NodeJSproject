@@ -1,7 +1,7 @@
 include /common/header.pug
 
 div.board_write.auto-center
-  form#form(action=`/board/posts/${idx}` method="POST")
+  form#form(action=`${_ROUTE_POST}/${idx}` method="POST")
     input(type="hidden" name="_method" value="PUT")
     fieldset
       legend 글수정
@@ -11,7 +11,7 @@ div.board_write.auto-center
           div.lbl
             label(for="board_name") 작성자
           div.desc
-            input(type="text" id="board_name" name="name" size="20" title="작성자" required autofocus value= data.name)
+            input(type="text" id="board_name" name="name" size="20" title="작성자" required autofocus value= data.post.name)
         div.tr
           div.lbl
             label(for="board_pw") 비밀번호
@@ -21,14 +21,23 @@ div.board_write.auto-center
           div.lbl
             label(for="board_subject") 제목
           div.desc
-            input(type="text" id="board_subject" name="subject" size="80" title="제목" required value= data.subject)
+            input(type="text" id="board_subject" name="subject" size="80" title="제목" required value= data.post.subject)
         div.tr
           div.lbl
             label(for="board_content") 내용
           div.desc
-            textarea(id="board_content" name="content" cols="80" rows="10" title="내용" required)= data.content
+            textarea(id="board_content" name="content" cols="80" rows="10" title="내용" required)= data.post.content
+        div.tr
+          div.lbl
+            label(for="board_content") 파일첨부
+          if data.file
+            input(type="hidden" id="file_idx" name="file_idx" value=`${data.file.idx}`)
+            div.desc= data.file.original_file_name + "   "
+              a(href="#this" id="deleteFile")= "[삭제]"
+          else
+            input(id="board_file" type="file" name="file")
       div.btn_group
-        a.btn-default(href="/board/posts/" + idx) 취소
+        a.btn-default(href=`${_ROUTE_POST}/${idx}`) 취소
         button.btn-submit(type="submit") 완료
 
 script(type="text/javascript").
@@ -37,17 +46,75 @@ script(type="text/javascript").
     fn_updateBoard(this);
   });
 
+  if(document.getElementById("board_file")) {
+    document.getElementById("board_file").addEventListener('change', function(e){
+      var fileSize = this.files[0].size;
+      if(fileSize > 1024 * 1024) {
+        alert("첨부 파일 용량은 1MB를 넘을 수 없습니다.");
+        this.value = "";
+      }
+    });
+  }
+
+  var deleteFileBtn = document.getElementById("deleteFile");
+  if(deleteFileBtn) {
+    deleteFileBtn.addEventListener('click', function(e){
+      e.preventDefault();
+
+      var fileDiv = this.parentElement;
+      fileDiv.textContent = "";
+
+      var fileInput = document.createElement("input");
+      fileInput.type = "file";
+      fileInput.id = "board_file";
+      fileInput.name = "file";
+      fileDiv.appendChild(fileInput);
+
+      fileInput.onchange = function() {
+        var fileSize = this.files[0].size;
+        if(fileSize > 1024 * 1024) {
+          alert("첨부 파일 용량은 1MB를 넘을 수 없습니다.");
+          this.value = "";
+        }
+      };
+    });
+  }
+
   function fn_updateBoard(form){
   	var comAjax = new ComAjax(form);
   	comAjax.setUrl(form.action);
   	comAjax.setCallback('fn_updateBoardCallback');
   	comAjax.ajax();
   }
-
+  
   function fn_updateBoardCallback(isUpdated){
   	if(isUpdated == '1'){
-  		alert("완료되었습니다.");
-      window.location.href = "/board/posts/#{idx}";
+      var fileInput = document.getElementById("board_file");
+      if(fileInput) {
+        if(document.getElementById("file_idx")) {
+          var prevFildIdx = document.getElementById("file_idx").value;
+          var comAjax = new ComAjax();
+          comAjax.setUrl("#{_ROUTE_FILE}/" + prevFildIdx);
+          comAjax.addParam("_method", "DELETE");
+          comAjax.ajax();
+        }
+        if(fileInput.files.length != 0) {
+          var form = document.createElement('form');
+          fileInput.parentNode.appendChild(form);
+
+          form.action = "#{_ROUTE_FILE}/#{idx}";
+          form.method = "POST";
+          form.enctype = "multipart/form-data"
+          form.appendChild(fileInput);
+          form.submit();
+        }
+        else {
+          window.location.href = "#{_ROUTE_POST}/#{idx}";
+        }     
+      }
+      else {
+        window.location.href = "#{_ROUTE_POST}/#{idx}";
+      }
   	}
   	else{
   		alert("비밀번호가 일치하지 않습니다.");

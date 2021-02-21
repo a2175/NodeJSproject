@@ -1,4 +1,5 @@
 var boardDAO = require(_DAO + "boardDAO");
+var fileDAO = require(_DAO + "fileDAO");
 
 class BoardService {
   
@@ -18,14 +19,20 @@ class BoardService {
   };
 
   async selectBoardDetail(request) {
-    var result = await boardDAO.selectBoardDetail(request);
-    var data = rowsToJson(result)[0];
-
+    var post = await boardDAO.selectBoardDetail(request);
+    var file = await fileDAO.selectFileByBoardIdx(request);
+    
+    var data = {
+      post: rowsToJson(post)[0],
+      file: rowsToJson(file)[0]
+    };
+    
     return data;
   }
 
   async insertBoard(request) {
-    await boardDAO.insertBoard(request);
+    var insertId = await boardDAO.insertBoard(request);
+    return String(insertId);
   }
 
   async updateBoard(request) {

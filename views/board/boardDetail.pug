@@ -5,15 +5,21 @@ div.board_view.auto-center
   div.table
     div.tr
       div.lbl 작성자
-      div.desc= data.name
+      div.desc= data.post.name
     div.tr
       div.lbl 제목
-      div.desc= data.subject
+      div.desc= data.post.subject
     div.tr
       div.lbl 내용
-      div.desc.content= data.content
+      div.desc.content= data.post.content
+    div.tr
+      div.lbl 첨부파일
+      div.desc
+        if data.file
+          a(href=`${_ROUTE_FILE}/${data.file.idx}`)= data.file.original_file_name
+  
   div#comment_list
-  form#comment_form(action=`/comment/${idx}` method="post")
+  form#comment_form(action=`${_ROUTE_COMMENT}/${idx}` method="post")
     div.submit_comment
       span.input
         div.tr
@@ -25,9 +31,9 @@ div.board_view.auto-center
       div.btn_group
         button.btn-submit(type="submit") 등록
   div.btn_group
-    a.btn-default(href="/board/posts") 목록
-    a.btn-submit(href="/board/posts/" + idx + "/edit") 수정
-    a.btn-submit(href="/board/posts/" + idx + "/delete") 삭제
+    a.btn-default(href=`${_ROUTE_POST}`) 목록
+    a.btn-submit(href=`${_ROUTE_POST}/${idx}/edit`) 수정
+    a.btn-submit(href=`${_ROUTE_POST}/${idx}/delete`) 삭제
 
 script(type="text/javascript").
   fn_selectCommentList();
@@ -39,7 +45,7 @@ script(type="text/javascript").
 
   function fn_selectCommentList() {
     var comAjax = new ComAjax();
-    comAjax.setUrl("/comment/#{idx}");
+    comAjax.setUrl("#{_ROUTE_COMMENT}/#{idx}");
     comAjax.setCallback("fn_selectCommentListCallback");
     comAjax.setMethod("GET");
     comAjax.ajax();
@@ -161,7 +167,7 @@ script(type="text/javascript").
 
   function fn_deleteComment(form, idx) {
     var comAjax = new ComAjax(form);
-    comAjax.setUrl(`/comment/${idx}`);
+    comAjax.setUrl(`#{_ROUTE_COMMENT}/${idx}`);
     comAjax.setCallback("fn_deleteCommentCallback");
     comAjax.ajax();
   }

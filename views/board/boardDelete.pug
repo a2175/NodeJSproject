@@ -1,7 +1,7 @@
 include /common/header.pug
 
 div.board_write.auto-center
-  form#form(action=`/board/posts/${idx}` method="POST")
+  form#form(action=`${_ROUTE_POST}/${idx}` method="POST")
     input(type="hidden" name="_method" value="DELETE")
     fieldset
       legend 글삭제
@@ -13,7 +13,7 @@ div.board_write.auto-center
           div.desc
             input(type="password" id="board_pw" name="pw" size="20" title="비밀번호" required autofocus)
       div.btn_group
-        a.btn-default(href="/board/posts/" + idx) 취소
+        a.btn-default(href=`${_ROUTE_POST}/${idx}`) 취소
         button.btn-submit(type="submit") 완료
 
 script(type="text/javascript").
@@ -32,7 +32,7 @@ script(type="text/javascript").
   function fn_deleteBoardCallback(isDeleted){
     if(isDeleted == '1'){
       alert("완료되었습니다.");
-      window.location.href = "/board/posts";
+      window.location.href = "#{_ROUTE_POST}";
     }
     else{
       alert("비밀번호가 일치하지 않습니다.");

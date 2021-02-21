@@ -1,7 +1,7 @@
 include /common/header.pug
 
 div.board_write.auto-center
-  form(action="/board/posts" method="post")
+  form#form(action=`${_ROUTE_POST}` method="post")
     fieldset
       legend 글작성
       h3 글작성
@@ -26,8 +26,51 @@ div.board_write.auto-center
             label(for="board_content") 내용
           div.desc
             textarea(id="board_content" name="content" cols="80" rows="10" title="내용" required)
+        div.tr
+          div.lbl
+            label(for="board_content") 파일첨부
+          div.desc
+            input(id="board_file" type="file" name="file")
       div.btn_group
-        a.btn-default(href="/board/posts") 취소
+        a.btn-default(href=`${_ROUTE_POST}`) 취소
         button.btn-submit(type="submit") 완료
+
+script(type="text/javascript").
+  var fileInput = document.getElementById("board_file");
+  fileInput.onchange = function() {
+    var fileSize = this.files[0].size;
+    if(fileSize > 1024 * 1024) {
+      alert("첨부 파일 용량은 1MB를 넘을 수 없습니다.");
+      this.value = "";
+    }
+  };
+
+  document.getElementById("form").addEventListener('submit', function(e){
+    e.preventDefault();
+    fn_insertBoard(this);
+  });
+
+  function fn_insertBoard(form){
+    var comAjax = new ComAjax(form);
+    comAjax.setUrl("#{_ROUTE_POST}");
+    comAjax.setCallback("fn_insertBoardCallback");
+    comAjax.ajax();
+  }
+
+  function fn_insertBoardCallback(insertId){
+    if(fileInput.files.length != 0) {
+      var form = document.createElement('form');
+      fileInput.parentNode.appendChild(form);
+
+      form.action = "#{_ROUTE_FILE}/" + insertId;
+      form.method = "POST";
+      form.enctype = "multipart/form-data"
+      form.appendChild(fileInput);
+      form.submit();
+    }
+    else {
+      window.location.href = "#{_ROUTE_POST}/" + insertId;
+    }
+  }
 
 include /common/footer.pug

@@ -69,7 +69,7 @@ class BoardDAO {
 
     var result = new Promise(function(resolve, reject) {
       connection.query(sql, params, function (error, results, fields) {
-        resolve();
+        resolve(results.insertId);
       });
     })
 
