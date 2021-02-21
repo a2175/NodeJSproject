@@ -3,7 +3,11 @@ Node.js + Express + Pug + Socket.io + MySQL
 RESTful 기반의 Express + Pug를 사용한 간단한 CRUD 게시판과
 Socket.io를 사용한 실시간 채팅 프로젝트입니다.
 
-#version = 2.13v
+#version = 2.14v
+
+[NodeJSproject 2.14v]
+1. 파일 업로드 기능 추가
+2. Route 경로 전역변수로 선언
 
 [NodeJSproject 2.13v]
 1. RESTful API 규칙에 가깝게 코드 수정
